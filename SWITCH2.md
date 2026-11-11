@@ -7,6 +7,11 @@ EGL, OpenGL ES), instead of libnx. The output is a homebrew `.nro`.
 No ROM or game assets are in this repository. You must supply your own legally
 obtained US ROM.
 
+## Credits
+
+The build instructions were adapted from the GBAtemp thread
+[Building SM64 for Nintendo Switch from sm64ex-alo repository](https://gbatemp.net/threads/building-sm64-for-nintendo-switch-from-sm64ex-alo-repository.652092/).
+
 ## Requirements
 
 - devkitPro at `/opt/devkitpro` with `DEVKITPRO` and `DEVKITA64` exported.
