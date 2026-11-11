@@ -203,7 +203,7 @@ else
 endif
 
 # macOS overrides
-ifeq ($(HOST_OS),Darwin)
+ifeq ($(HOST_OS)$(TARGET_SWITCH),Darwin0)
   OSX_BUILD := 1
   CPP_ASSEMBLY := 1
   # Using Homebrew?
@@ -436,24 +436,24 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
   # Make sure assets exist
   NOEXTRACT ?= 0
   ifeq ($(NOEXTRACT),0)
-    DUMMY != $(PYTHON) extract_assets.py $(VERSION) >&2 || echo FAIL
+    DUMMY := $(shell $(PYTHON) extract_assets.py $(VERSION) >&2 || echo FAIL)
     ifeq ($(DUMMY),FAIL)
       $(error Failed to extract assets from US ROM)
     endif
     ifneq (,$(wildcard baserom.jp.z64))
-      DUMMY != $(PYTHON) extract_assets.py jp >&2 || echo FAIL
+      DUMMY := $(shell $(PYTHON) extract_assets.py jp >&2 || echo FAIL)
       ifeq ($(DUMMY),FAIL)
         $(error Failed to extract assets from JP ROM)
       endif
     endif
     ifneq (,$(wildcard baserom.eu.z64))
-      DUMMY != $(PYTHON) extract_assets.py eu >&2 || echo FAIL
+      DUMMY := $(shell $(PYTHON) extract_assets.py eu >&2 || echo FAIL)
       ifeq ($(DUMMY),FAIL)
         $(error Failed to extract assets from EU ROM)
       endif
     endif
     ifneq (,$(wildcard baserom.sh.z64))
-      DUMMY != $(PYTHON) extract_assets.py sh >&2 || echo FAIL
+      DUMMY := $(shell $(PYTHON) extract_assets.py sh >&2 || echo FAIL)
       ifeq ($(DUMMY),FAIL)
         $(error Failed to extract assets from SH ROM)
       endif
@@ -463,9 +463,9 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
   # Make tools if out of date
   $(info Building tools...)
 ifeq ($(TARGET_PORT_CONSOLE),0)
-  DUMMY != CC=$(CC) CXX=$(CXX) $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL
+  DUMMY := $(shell CC=$(CC) CXX=$(CXX) $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL)
 else
-  DUMMY != $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL
+  DUMMY := $(shell $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL)
 endif
     ifeq ($(DUMMY),FAIL)
       $(error Failed to build tools)
@@ -632,6 +632,8 @@ endif
 COLOR ?= 1
 
 # File dependencies and variables for specific files
+# make 3.81 needs the build dir before level_rules.mk is generated
+BUILD_DIR_INIT := $(shell mkdir -p $(BUILD_DIR))
 include Makefile.split
 
 # Source code files
@@ -760,14 +762,18 @@ ifeq ($(TARGET_SWITCH),1)
   include $(DEVKITPRO)/devkitA64/base_tools
   NXPATH := $(DEVKITPRO)/portlibs/switch/bin
   PORTLIBS ?= $(DEVKITPRO)/portlibs/switch
-  LIBNX ?= $(DEVKITPRO)/libnx
+  LIBNX := $(DEVKITPRO)/libounce
+  PORTLIBS_SWITCH2 := $(DEVKITPRO)/portlibs/switch2
+  export PATH := $(PORTLIBS_SWITCH2)/bin:$(PATH)
+  PKGCONFIG_NX := $(PORTLIBS_SWITCH2)/bin/aarch64-none-elf-pkg-config
   CROSS ?= aarch64-none-elf-
   SDLCROSS := $(NXPATH)/
   CC := $(CROSS)gcc
   CXX := $(CROSS)g++
   STRIP := $(CROSS)strip
   NXARCH := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
-  INCLUDE_DIRS += $(LIBNX)/include $(PORTLIBS)/include
+  INCLUDE_DIRS += $(LIBNX)/include $(PORTLIBS_SWITCH2)/include $(PORTLIBS)/include
+  NXARCH += -D__SWITCH2__
 
   NX_APP_TITLE := Super Mario 64
   NX_APP_AUTHOR := Nintendo - Port by Vatuu, fgsfdsfgs and KiritoDev
@@ -982,7 +988,7 @@ else ifeq ($(findstring SDL,$(WINDOW_API)),SDL)
   else ifeq ($(TARGET_RPI),1)
     BACKEND_LDFLAGS += -lGLESv2
   else ifeq ($(TARGET_SWITCH),1)
-    BACKEND_LDFLAGS += -lGLESv2
+    BACKEND_LDFLAGS += $(shell $(PKGCONFIG_NX) --libs glesv2 egl)
   else ifeq ($(USE_GLES),1)
     BACKEND_LDFLAGS += -lGLESv2
   else ifeq ($(OSX_BUILD),1)
@@ -1110,7 +1116,7 @@ else ifeq ($(TARGET_N3DS),1)
 LDFLAGS := $(LIBPATHS) -lcitro3d -lctru -lm -specs=3dsx.specs -g -marm -mthumb-interwork -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft # -Wl,-Map,$(notdir $*.map)
 
 else ifeq ($(TARGET_SWITCH),1)
-  LDFLAGS := -specs=$(LIBNX)/switch.specs $(NXARCH) $(BACKEND_LDFLAGS) -lstdc++ -lm
+  LDFLAGS := -specs=$(LIBNX)/switch.specs $(NXARCH) -L$(PORTLIBS_SWITCH2)/lib -L$(LIBNX)/lib $(BACKEND_LDFLAGS) -lstdc++ -lm
 
 else ifeq ($(WINDOWS_BUILD),1)
   LDFLAGS := $(BITS) -march=$(TARGET_ARCH) -Llib -lpthread $(BACKEND_LDFLAGS) -static
@@ -1386,7 +1392,7 @@ ifeq ($(TARGET_N3DS),1)
 endif
 
 # Make sure build directory exists before compiling anything
-DUMMY != mkdir -p $(ALL_DIRS)
+DUMMY := $(shell mkdir -p $(ALL_DIRS))
 
 $(BUILD_DIR)/include/text_strings.h: $(BUILD_DIR)/include/text_menu_strings.h
 
