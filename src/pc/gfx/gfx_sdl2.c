@@ -205,14 +205,9 @@ static void gfx_sdl_init(const char *window_title) {
 
     #ifdef TARGET_SWITCH
     configWindow.fullscreen = false;
-    // if docked, set 1920x1080
-    if (appletGetOperationMode() == 1) {
-        configWindow.w = 1920;
-        configWindow.h = 1080;
-    } else {
-        configWindow.w = 1280;
-        configWindow.h = 720;
-    }
+    // the Switch 2 screen is 1080p in handheld and docked
+    configWindow.w = 1920;
+    configWindow.h = 1080;
     int xpos = 0;
     int ypos = 0;
     #else
