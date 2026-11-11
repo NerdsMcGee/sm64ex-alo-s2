@@ -1,4 +1,17 @@
 # sm64ex_alo
+
+> **This branch (`switch2-libounce`) is a fork that builds sm64ex-alo for the Nintendo Switch 2 using [libounce](SWITCH2.md) instead of libnx.**
+>
+> **See [SWITCH2.md](SWITCH2.md) for the build instructions and the full list of changes made for the Switch 2.**
+>
+> Summary of the Switch 2 changes:
+> * `Makefile`: builds against libounce and the Switch 2 portlibs (GLES/EGL via the Switch 2 pkg-config).
+> * `Makefile` / `Makefile.split`: compatibility fixes for macOS make 3.81, and no Mac-native toolchain override for Switch builds.
+> * `src/pc/gfx/gfx_sdl2.c`: the Switch window is 1920x1080 in both handheld and docked modes.
+> * `build_switch2.sh`: one-step build script.
+>
+> No ROM or game assets are included. You must supply your own US ROM as `baserom.us.z64`.
+
 Fork of [sm64pc/sm64ex](https://github.com/sm64pc/sm64ex) with additional features. 
 
 ## Changes
