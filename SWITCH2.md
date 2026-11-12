@@ -15,7 +15,7 @@ The build instructions were adapted from the GBAtemp thread
 ## Requirements
 
 - devkitPro at `/opt/devkitpro` with `DEVKITPRO` and `DEVKITA64` exported.
-- The Switch 2 SDK (`ounce-sdk`, tested with 20261111). It provides
+- The Switch 2 SDK (`ounce-sdk`, tested with 20261112b). It provides
   `$DEVKITPRO/libounce` and `$DEVKITPRO/portlibs/switch2`.
 - The Switch 1 portlibs (SDL2, zlib and the rest):
 
