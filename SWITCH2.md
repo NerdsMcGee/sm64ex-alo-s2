@@ -57,6 +57,22 @@ Output: `build/us_nx/sm64.us.f3dex2e.nro`
 The Makefile does not track every header dependency. Delete `build/` after
 editing headers or changing make options.
 
+## Asset-free release
+
+The NRO from a normal build has the textures and sound from your ROM linked in,
+so it must not be redistributed. For a release, build with `EXTERNAL_DATA=1`,
+which keeps the textures and sound out of the NRO. The game then reads them from
+`base.zip`, which every user makes from their own ROM.
+
+- `./make_release.sh` builds the release package into `release/`
+  (`sm64ex-alo.nro`, a README and checksums). It never contains `base.zip` or a ROM.
+- `./make_basepack.sh` builds `base.zip` from `baserom.us.z64`. On the console it
+  goes in `/switch/sm64ex-alo/sm64ex_res/base.zip`.
+
+The NRO still holds the game code and a small amount of ROM-derived data (the
+demo input recordings and the Mario animation tables), as in any build of this
+project.
+
 ## Install and run
 
 Copy the `.nro` to `sdmc:/switch/sm64ex-alo/` and launch it from the homebrew
