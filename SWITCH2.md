@@ -15,7 +15,7 @@ The build instructions were adapted from the GBAtemp thread
 ## Requirements
 
 - devkitPro at `/opt/devkitpro` with `DEVKITPRO` and `DEVKITA64` exported.
-- The Switch 2 SDK (`ounce-sdk`, tested with 20261112b). It provides
+- The Switch 2 SDK (`ounce-sdk`, tested with 20261113). It provides
   `$DEVKITPRO/libounce` and `$DEVKITPRO/portlibs/switch2`.
 - The Switch 1 portlibs (SDL2, zlib and the rest):
 
@@ -85,7 +85,10 @@ menu. The game writes its config and save file next to it.
      (`BUILD_DIR_INIT`), since `level_rules.mk` is generated into it.
    With GNU make 4 or newer these changes are harmless.
 
-5. **1080p window in handheld and docked.** In `src/pc/gfx/gfx_sdl2.c`, the
+5. **Switch 2 CPU flags.** `NXARCH` uses `SWITCH2_CPU` (Cortex-A78C) from
+   `$(LIBNX)/switch2_cpu.mk` instead of the Switch 1 flags. The resulting NRO
+   does not run on a Switch 1.
+6. **1080p window in handheld and docked.** In `src/pc/gfx/gfx_sdl2.c`, the
    Switch window is always 1920x1080. Upstream picks 1920x1080 docked and
    1280x720 handheld, but the Switch 2 screen is 1080p in both modes.
 

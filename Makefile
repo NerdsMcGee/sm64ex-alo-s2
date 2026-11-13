@@ -771,7 +771,8 @@ ifeq ($(TARGET_SWITCH),1)
   CC := $(CROSS)gcc
   CXX := $(CROSS)g++
   STRIP := $(CROSS)strip
-  NXARCH := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
+  include $(LIBNX)/switch2_cpu.mk
+  NXARCH := $(SWITCH2_CPU) -mtp=soft -fPIE
   INCLUDE_DIRS += $(LIBNX)/include $(PORTLIBS_SWITCH2)/include $(PORTLIBS)/include
   NXARCH += -D__SWITCH2__
 
