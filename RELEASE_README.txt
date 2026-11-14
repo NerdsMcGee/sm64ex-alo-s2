@@ -24,4 +24,4 @@ On a computer with the Switch 2 SDK installed (see SWITCH2.md in the source):
 4. The file is build/us_nx/sm64ex_res/base.zip
 
 Verify the download with SHA256SUMS.
-Built with: ounce-devkit 20261113f. Requires a Switch 2.
+Built with: ounce-devkit 20261114. Requires a Switch 2.
