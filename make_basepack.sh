@@ -1,7 +1,7 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 # Builds base.zip (the textures and sound) from YOUR OWN US ROM.
 # Put baserom.us.z64 in this folder first. Needs the same toolchain as build_switch2.sh.
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
 [ -f baserom.us.z64 ] || { echo "Missing baserom.us.z64 in $(pwd)"; exit 1; }
 ./build_switch2.sh EXTERNAL_DATA=1 res || exit 1
 echo
